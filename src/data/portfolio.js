@@ -261,7 +261,7 @@ export const portfolioData = {
       degree: "Bachelor of Technology - Computer Science and Engineering",
       institution: "Lovely Professional University",
       location: "Phagwara, Punjab",
-      period: "Aug' 22 — Present",
+      period: "Aug' 23 — Present",
       honors: "CGPA: 8.37",
       focus: "Data Structures, Algorithms, Database Management Systems, Big Data Technologies, Machine Learning"
     },
