@@ -31,9 +31,9 @@ function CameraController({ mode, targetPos, isInteracting }) {
 
     const handleTouchStart = (e) => {
       if (mode !== 'game' || isInteracting) return;
-      // Only drag camera if touch starts on upper or right portion of screen (avoiding joystick)
+      // Only drag camera on the right side of the screen
       const touch = e.touches[0];
-      if (touch && (touch.clientX > window.innerWidth * 0.45 || touch.clientY < window.innerHeight * 0.6)) {
+      if (touch && touch.clientX > window.innerWidth * 0.55) {
         lastTouchX = touch.clientX;
         lastTouchY = touch.clientY;
       }

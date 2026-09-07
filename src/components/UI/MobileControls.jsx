@@ -1,106 +1,117 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { ArrowUp, Zap, Sparkles, Navigation } from 'lucide-react';
+import { ArrowUp, Zap, Sparkles, Move } from 'lucide-react';
 import { soundManager } from '../../audio/soundManager';
 
 export function MobileControls({ setVirtualInput, nearbyZone, onInteract }) {
-  const joystickBaseRef = useRef(null);
-  const [knobPos, setKnobPos] = useState({ x: 0, y: 0 });
-  const [isTouching, setIsTouching] = useState(false);
-  const [isSprintActive, setIsSprintActive] = useState(false);
+  const movementZoneRef = useRef(null);
   const touchIdRef = useRef(null);
+  const originRef = useRef({ x: 0, y: 0 });
+
+  // Dynamic joystick position and knob displacement
+  const [joystickCenter, setJoystickCenter] = useState({ x: 0, y: 0 });
+  const [knobOffset, setKnobOffset] = useState({ x: 0, y: 0 });
+  const [isActive, setIsActive] = useState(false);
+  const [isSprintActive, setIsSprintActive] = useState(false);
+
+  const MAX_RADIUS = 52; // pixels of maximum drag from touch origin
 
   // Update joystick displacement and feed input
-  const updateJoystick = useCallback((clientX, clientY) => {
-    if (!joystickBaseRef.current) return;
-    const rect = joystickBaseRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = clientX - centerX;
-    const dy = clientY - centerY;
-    const maxRadius = rect.width / 2.1;
+  const processMovement = useCallback((clientX, clientY) => {
+    const dx = clientX - originRef.current.x;
+    const dy = clientY - originRef.current.y;
     const dist = Math.hypot(dx, dy);
 
     let limitedX = dx;
     let limitedY = dy;
-    if (dist > maxRadius) {
-      limitedX = (dx / dist) * maxRadius;
-      limitedY = (dy / dist) * maxRadius;
+    if (dist > MAX_RADIUS) {
+      limitedX = (dx / dist) * MAX_RADIUS;
+      limitedY = (dy / dist) * MAX_RADIUS;
     }
 
-    setKnobPos({ x: limitedX, y: limitedY });
+    setKnobOffset({ x: limitedX, y: limitedY });
 
     // Normalized analog coordinates (-1 to 1)
-    const normX = limitedX / maxRadius;
-    const normY = limitedY / maxRadius;
+    const normX = limitedX / MAX_RADIUS;
+    const normY = limitedY / MAX_RADIUS;
 
     setVirtualInput('analogVector', { x: normX, y: normY });
 
     // Directional thresholds for boolean fallbacks
-    const deadzone = 0.25;
+    const deadzone = 0.22;
     setVirtualInput('forward', normY < -deadzone);
     setVirtualInput('backward', normY > deadzone);
     setVirtualInput('left', normX < -deadzone);
     setVirtualInput('right', normX > deadzone);
   }, [setVirtualInput]);
 
-  // Touch handlers with passive: false to prevent scrolling
+  // Touch handlers attached to the touch movement zone
   useEffect(() => {
-    const el = joystickBaseRef.current;
-    if (!el) return;
+    const zoneEl = movementZoneRef.current;
+    if (!zoneEl) return;
 
     const onTouchStart = (e) => {
-      e.preventDefault();
+      // If already tracking a touch, ignore subsequent touches in this zone
+      if (touchIdRef.current !== null) return;
+
       const touch = e.changedTouches[0];
       touchIdRef.current = touch.identifier;
-      setIsTouching(true);
-      updateJoystick(touch.clientX, touch.clientY);
+
+      originRef.current = { x: touch.clientX, y: touch.clientY };
+      setJoystickCenter({ x: touch.clientX, y: touch.clientY });
+      setKnobOffset({ x: 0, y: 0 });
+      setIsActive(true);
+
       if (navigator.vibrate) navigator.vibrate(10);
+      e.preventDefault();
     };
 
     const onTouchMove = (e) => {
-      e.preventDefault();
+      if (touchIdRef.current === null) return;
       for (let i = 0; i < e.changedTouches.length; i++) {
         if (e.changedTouches[i].identifier === touchIdRef.current) {
-          updateJoystick(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+          processMovement(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+          e.preventDefault();
           break;
         }
       }
     };
 
     const onTouchEnd = (e) => {
-      e.preventDefault();
+      if (touchIdRef.current === null) return;
       for (let i = 0; i < e.changedTouches.length; i++) {
         if (e.changedTouches[i].identifier === touchIdRef.current) {
-          setIsTouching(false);
-          setKnobPos({ x: 0, y: 0 });
           touchIdRef.current = null;
+          setIsActive(false);
+          setKnobOffset({ x: 0, y: 0 });
+
           setVirtualInput('analogVector', { x: 0, y: 0 });
           setVirtualInput('forward', false);
           setVirtualInput('backward', false);
           setVirtualInput('left', false);
           setVirtualInput('right', false);
+          e.preventDefault();
           break;
         }
       }
     };
 
-    el.addEventListener('touchstart', onTouchStart, { passive: false });
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
-    el.addEventListener('touchend', onTouchEnd, { passive: false });
-    el.addEventListener('touchcancel', onTouchEnd, { passive: false });
+    zoneEl.addEventListener('touchstart', onTouchStart, { passive: false });
+    zoneEl.addEventListener('touchmove', onTouchMove, { passive: false });
+    zoneEl.addEventListener('touchend', onTouchEnd, { passive: false });
+    zoneEl.addEventListener('touchcancel', onTouchEnd, { passive: false });
 
     return () => {
-      el.removeEventListener('touchstart', onTouchStart);
-      el.removeEventListener('touchmove', onTouchMove);
-      el.removeEventListener('touchend', onTouchEnd);
-      el.removeEventListener('touchcancel', onTouchEnd);
+      zoneEl.removeEventListener('touchstart', onTouchStart);
+      zoneEl.removeEventListener('touchmove', onTouchMove);
+      zoneEl.removeEventListener('touchend', onTouchEnd);
+      zoneEl.removeEventListener('touchcancel', onTouchEnd);
     };
-  }, [updateJoystick, setVirtualInput]);
+  }, [processMovement, setVirtualInput]);
 
   // Handle Jump Tap
   const handleJump = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (navigator.vibrate) navigator.vibrate(15);
     setVirtualInput('jump', true);
     setTimeout(() => setVirtualInput('jump', false), 200);
@@ -109,6 +120,7 @@ export function MobileControls({ setVirtualInput, nearbyZone, onInteract }) {
   // Toggle Sprint Mode
   const handleToggleSprint = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const nextState = !isSprintActive;
     setIsSprintActive(nextState);
     setVirtualInput('sprint', nextState);
@@ -119,6 +131,7 @@ export function MobileControls({ setVirtualInput, nearbyZone, onInteract }) {
   // Interact Station
   const handleInteract = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (nearbyZone) {
       if (navigator.vibrate) navigator.vibrate(30);
       onInteract(nearbyZone);
@@ -127,29 +140,40 @@ export function MobileControls({ setVirtualInput, nearbyZone, onInteract }) {
 
   return (
     <div className="mobile-controls-overlay">
-      {/* Virtual Joystick (Bottom Left) */}
-      <div className="joystick-container">
-        <div ref={joystickBaseRef} className="virtual-joystick-base">
-          {/* Compass direction indicators */}
-          <div className="joystick-dir-indicator dir-n">▲</div>
-          <div className="joystick-dir-indicator dir-s">▼</div>
-          <div className="joystick-dir-indicator dir-w">◀</div>
-          <div className="joystick-dir-indicator dir-e">▶</div>
-
+      {/* Dynamic Touch Movement Area (Left 58% of screen) */}
+      <div ref={movementZoneRef} className="touch-movement-zone">
+        {/* Dynamic Joystick: Appears where the user touches */}
+        {isActive ? (
           <div
-            className={`virtual-joystick-knob ${isTouching ? 'knob-active' : ''}`}
+            className="dynamic-joystick-base"
             style={{
-              transform: `translate(${knobPos.x}px, ${knobPos.y}px)`,
-              transition: isTouching ? 'none' : 'transform 0.16s cubic-bezier(0.18, 0.89, 0.32, 1.28)'
+              left: `${joystickCenter.x}px`,
+              top: `${joystickCenter.y}px`
             }}
           >
-            <div className="knob-core" />
+            {/* Direction hints */}
+            <div className="joystick-dir-indicator dir-n">▲</div>
+            <div className="joystick-dir-indicator dir-s">▼</div>
+            <div className="joystick-dir-indicator dir-w">◀</div>
+            <div className="joystick-dir-indicator dir-e">▶</div>
+
+            {/* Moving Knob */}
+            <div
+              className="dynamic-joystick-knob"
+              style={{
+                transform: `translate(${knobOffset.x}px, ${knobOffset.y}px)`
+              }}
+            >
+              <div className="knob-core" />
+            </div>
           </div>
-        </div>
-        <div className="joystick-guide-label">
-          <Navigation size={10} />
-          <span>DRAG TO MOVE</span>
-        </div>
+        ) : (
+          /* Subtle idle guide when not touching */
+          <div className="movement-idle-guide">
+            <Move size={14} className="guide-icon-pulse" />
+            <span>Tap & drag anywhere here to move</span>
+          </div>
+        )}
       </div>
 
       {/* Action Buttons (Bottom Right) */}
