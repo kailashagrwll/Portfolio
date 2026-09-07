@@ -91,6 +91,25 @@ export const portfolioData = {
 
   projects: [
     {
+      id: "3d-interactive-portfolio",
+      title: "3D Interactive Game Portfolio",
+      tag: "Three.js & WebGL",
+      category: "Full-Stack",
+      period: "Feb' 26 — Present",
+      featured: true,
+      description: "An explorable 3D low-poly futuristic island portfolio game with real-time character physics, Web Audio synthesizer, and instant 2D recruiter toggle.",
+      highlights: [
+        "Built custom third-person procedural character controller with jump, sprint, and smooth camera rig.",
+        "Engineered 7 interactive island campus stations (Spawn, About, Projects, Skills, Training, Contact, and Resume).",
+        "Developed custom Web Audio API synthesizer for spatial ambient music and procedural sound effects without external audio assets.",
+        "Included high-contrast dual mode: gamified 3D exploration and a recruiter-friendly 2D portfolio."
+      ],
+      tech: ["React", "Three.js", "React Three Fiber", "@react-three/drei", "Vite", "Web Audio API", "Vanilla CSS"],
+      github: "https://github.com/kailashagrwll/Portfolio",
+      demo: "https://github.com/kailashagrwll/Portfolio",
+      gradient: "linear-gradient(135deg, #0284c7 0%, #00f0ff 50%, #a855f7 100%)"
+    },
+    {
       id: "email-scheduling-platform",
       title: "Email Scheduling & Delivery Platform",
       tag: "Full-Stack System",
@@ -242,7 +261,7 @@ export const portfolioData = {
       degree: "Bachelor of Technology - Computer Science and Engineering",
       institution: "Lovely Professional University",
       location: "Phagwara, Punjab",
-      period: "Aug' 23 — Present",
+      period: "Aug' 22 — Present",
       honors: "CGPA: 8.37",
       focus: "Data Structures, Algorithms, Database Management Systems, Big Data Technologies, Machine Learning"
     },
@@ -250,7 +269,7 @@ export const portfolioData = {
       degree: "Intermediate (Class XII)",
       institution: "Delhi Public School",
       location: "Digboi, Assam",
-      period: "Apr' 18 — Mar' 20",
+      period: "Apr' 20 — Mar' 22",
       honors: "Score: 71.4%",
       focus: "Science, Physics, Chemistry, Mathematics"
     },
@@ -258,7 +277,7 @@ export const portfolioData = {
       degree: "Matriculation (Class X)",
       institution: "Delhi Public School",
       location: "Digboi, Assam",
-      period: "Apr' 17 — Mar' 18",
+      period: "Apr' 19 — Mar' 20",
       honors: "Score: 84.0%",
       focus: "Foundational Sciences & Mathematics"
     }
