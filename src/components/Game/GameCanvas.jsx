@@ -9,7 +9,6 @@ import { ProjectsZone } from './Zones/ProjectsZone';
 import { SkillsZone } from './Zones/SkillsZone';
 import { ExperienceZone } from './Zones/ExperienceZone';
 import { ContactZone } from './Zones/ContactZone';
-import { ResumeZone } from './Zones/ResumeZone';
 import { portfolioData } from '../../data/portfolio';
 import { soundManager } from '../../audio/soundManager';
 
@@ -193,10 +192,6 @@ export function GameCanvas({
       <ContactZone
         isNearby={nearbyZone?.id === 'contact'}
         onInteract={() => onInteractZone(portfolioData.zones.find((z) => z.id === 'contact'))}
-      />
-      <ResumeZone
-        isNearby={nearbyZone?.id === 'resume'}
-        onInteract={() => onInteractZone(portfolioData.zones.find((z) => z.id === 'resume'))}
       />
     </Canvas>
   );

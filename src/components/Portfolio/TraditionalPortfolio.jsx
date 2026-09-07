@@ -3,7 +3,6 @@ import { portfolioData } from '../../data/portfolio';
 import { soundManager } from '../../audio/soundManager';
 import {
   Gamepad2,
-  Download,
   Mail,
   ExternalLink,
   Terminal,
@@ -110,16 +109,6 @@ export function TraditionalPortfolio({ onReturnToGame }) {
             <button onClick={onReturnToGame} className="btn-primary-glow">
               <Gamepad2 size={18} />
               <span>Explore 3D World</span>
-            </button>
-            <button
-              onClick={() => {
-                soundManager.playCelebration();
-                window.print();
-              }}
-              className="btn-secondary-glass"
-            >
-              <Download size={18} />
-              <span>Print / Save CV</span>
             </button>
             <button onClick={() => scrollToSection('contact')} className="btn-accent-pill">
               <span>Contact Me</span>

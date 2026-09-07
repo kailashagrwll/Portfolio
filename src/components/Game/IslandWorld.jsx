@@ -37,8 +37,6 @@ export function IslandWorld() {
   const pathWayPoints = useMemo(() => [
     // Center to About [0, 0, -18]
     { pos: [0, 0.02, -9], size: [2.2, 0.02, 16] },
-    // Center to Resume [0, 0, 14]
-    { pos: [0, 0.02, 7], size: [2.2, 0.02, 12] },
     // Center to Projects [-18, 0, -6]
     { pos: [-9, 0.02, -3], size: [18, 0.02, 2.0], rot: [0, -0.32, 0] },
     // Center to Skills [18, 0, -6]

@@ -7,7 +7,6 @@ import {
   Mail,
   Copy,
   Check,
-  Download,
   Terminal,
   Briefcase,
   GraduationCap,
@@ -410,59 +409,6 @@ export function InteractionModal({ zone, onClose, onSwitchTo2D }) {
                       </button>
                     </form>
                   )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ================= RESUME TERMINAL ================= */}
-          {zone.id === 'resume' && (
-            <div className="zone-content resume-view">
-              <div className="resume-preview-sheet">
-                <div className="resume-sheet-header">
-                  <div>
-                    <h3>{portfolioData.personal.name}</h3>
-                    <p>{portfolioData.personal.title}</p>
-                    <p className="resume-meta">{portfolioData.personal.location} • {portfolioData.personal.socials.email}</p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      soundManager.playCelebration();
-                      window.print();
-                    }}
-                    className="btn-primary-glow"
-                  >
-                    <Download size={16} />
-                    <span>Download / Print CV</span>
-                  </button>
-                </div>
-
-                <hr className="resume-divider" />
-
-                <div className="resume-section">
-                  <h4>Professional Summary</h4>
-                  <p>{portfolioData.resumeSummary.summary}</p>
-                </div>
-
-                <div className="resume-section">
-                  <h4>Core Competencies</h4>
-                  <div className="competencies-grid">
-                    {portfolioData.resumeSummary.coreCompetencies.map((c, i) => (
-                      <div key={i} className="competency-badge">
-                        <span>✓</span> {c}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="resume-section">
-                  <h4>Recent Experience Highlight</h4>
-                  {portfolioData.experience.slice(0, 2).map((exp, idx) => (
-                    <div key={idx} className="resume-exp-item">
-                      <div className="r-exp-title"><strong>{exp.role}</strong> — {exp.company} ({exp.period})</div>
-                      <p>{exp.description}</p>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>

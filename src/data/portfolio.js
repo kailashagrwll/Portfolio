@@ -19,8 +19,7 @@ export const portfolioData = {
       email: "kailashagarwal957@gmail.com",
       phone: "+91-9707026697",
       website: "https://github.com/kailashagrwl"
-    },
-    resumeUrl: "#resume-download"
+    }
   },
 
   zones: [
@@ -77,15 +76,6 @@ export const portfolioData = {
       color: "#00d2ff",
       icon: "Send",
       description: "Connect directly via Email (kailashagarwal957@gmail.com), Phone (+91-9707026697), LinkedIn, or GitHub."
-    },
-    {
-      id: "resume",
-      title: "Resume Terminal",
-      subtitle: "Verified CV & Credentials",
-      position: [0, 0, 14],
-      color: "#e2e8f0",
-      icon: "FileText",
-      description: "Review my complete resume summary or download a print-ready formatted CV."
     }
   ],
 
@@ -281,17 +271,5 @@ export const portfolioData = {
       honors: "Score: 84.0%",
       focus: "Foundational Sciences & Mathematics"
     }
-  ],
-
-  resumeSummary: {
-    headline: "Kailash Agarwal — Computer Science Engineer & Full-Stack Developer",
-    summary: "Dedicated Computer Science & Engineering student at Lovely Professional University (CGPA 8.37) with strong problem-solving skills (200+ DSA problems solved, LeetCode 1557) and expertise spanning C++, Python, SQL, full-stack web engineering, machine learning, and data analytics.",
-    coreCompetencies: [
-      "Data Structures & Algorithms (200+ Solved, LeetCode 1557)",
-      "Programming: C++, C, Python, SQL",
-      "Full-Stack Web: React, TypeScript, Node.js, Express, SQLite, Redis",
-      "Data Analytics & ML: NumPy, Pandas, Scikit-Learn, Power BI, DAX, Power Query",
-      "Databases & Big Data: MySQL, Apache Cassandra, Apache Hadoop, Apache Hive"
-    ]
-  }
+  ]
 };
