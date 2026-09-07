@@ -18,6 +18,9 @@ function CameraController({ mode, targetPos, isInteracting }) {
   const mouseLookOffset = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    let lastTouchX = null;
+    let lastTouchY = null;
+
     const handleMouseMove = (e) => {
       if (mode !== 'game' || isInteracting) return;
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
@@ -26,8 +29,45 @@ function CameraController({ mode, targetPos, isInteracting }) {
       mouseLookOffset.current.y = ny * 0.8;
     };
 
+    const handleTouchStart = (e) => {
+      if (mode !== 'game' || isInteracting) return;
+      // Only drag camera if touch starts on upper or right portion of screen (avoiding joystick)
+      const touch = e.touches[0];
+      if (touch && (touch.clientX > window.innerWidth * 0.45 || touch.clientY < window.innerHeight * 0.6)) {
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (mode !== 'game' || isInteracting || lastTouchX === null) return;
+      const touch = e.touches[0];
+      if (touch) {
+        const dx = touch.clientX - lastTouchX;
+        const dy = touch.clientY - lastTouchY;
+        mouseLookOffset.current.x = Math.max(-2.5, Math.min(2.5, mouseLookOffset.current.x + dx * 0.005));
+        mouseLookOffset.current.y = Math.max(-1.2, Math.min(1.5, mouseLookOffset.current.y - dy * 0.005));
+        lastTouchX = touch.clientX;
+        lastTouchY = touch.clientY;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      lastTouchX = null;
+      lastTouchY = null;
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
   }, [mode, isInteracting]);
 
   useFrame((state, delta) => {

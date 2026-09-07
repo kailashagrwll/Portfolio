@@ -65,7 +65,7 @@ export function StartScreen({ onEnterGame, isMuted, onToggleMute }) {
             <Navigation size={14} />
             <span>Game Controls</span>
           </div>
-          <div className="controls-grid">
+          <div className="controls-grid desktop-controls-grid">
             <div className="control-item">
               <span className="key-cap">W A S D</span>
               <span className="control-label">Move Character</span>
@@ -83,8 +83,16 @@ export function StartScreen({ onEnterGame, isMuted, onToggleMute }) {
               <span className="control-label">Interact Station</span>
             </div>
           </div>
+
+          <div className="mobile-controls-hint">
+            <div className="mobile-hint-badge">📱 Mobile Optimized</div>
+            <div className="mobile-hint-text">
+              Use the on-screen joystick on bottom-left to explore. Tap Jump, Sprint, and Open Station on bottom-right.
+            </div>
+          </div>
+
           <div className="cheatsheet-footer">
-            Mobile touch controls & virtual joystick supported automatically.
+            Drag screen to look around • Teleport anywhere via Fast Travel in HUD.
           </div>
         </div>
       </div>

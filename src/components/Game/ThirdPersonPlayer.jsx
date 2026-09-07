@@ -47,21 +47,32 @@ export function ThirdPersonPlayer({
     // Constrain delta to prevent huge jumps on tab switches
     const dt = Math.min(delta, 0.1);
 
-    const { forward, backward, left, right, sprint, jump } = movement;
+    const { forward, backward, left, right, sprint, jump, analogVector } = movement;
 
     // Movement speeds
     const baseSpeed = sprint ? 13.5 : 7.8;
-    const moveX = (right ? 1 : 0) - (left ? 1 : 0);
-    const moveZ = (backward ? 1 : 0) - (forward ? 1 : 0);
+    let moveX = 0;
+    let moveZ = 0;
+    let inputMagnitude = 1;
 
-    const isMoving = moveX !== 0 || moveZ !== 0;
+    if (analogVector && (Math.abs(analogVector.x) > 0.06 || Math.abs(analogVector.y) > 0.06)) {
+      moveX = analogVector.x;
+      moveZ = analogVector.y;
+      inputMagnitude = Math.min(1, Math.hypot(moveX, moveZ));
+    } else {
+      moveX = (right ? 1 : 0) - (left ? 1 : 0);
+      moveZ = (backward ? 1 : 0) - (forward ? 1 : 0);
+      inputMagnitude = (moveX !== 0 || moveZ !== 0) ? 1 : 0;
+    }
+
+    const isMoving = inputMagnitude > 0.06;
 
     // Handle horizontal movement
     if (isMoving) {
       const inputVector = new THREE.Vector3(moveX, 0, moveZ).normalize();
       targetRotationY.current = Math.atan2(inputVector.x, inputVector.z);
 
-      const moveStep = inputVector.multiplyScalar(baseSpeed * dt);
+      const moveStep = inputVector.multiplyScalar(baseSpeed * inputMagnitude * dt);
       pos.current.x += moveStep.x;
       pos.current.z += moveStep.z;
 

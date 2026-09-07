@@ -9,7 +9,8 @@ export function useKeyboardControls() {
     sprint: false,
     jump: false,
     interact: false,
-    escape: false
+    escape: false,
+    analogVector: { x: 0, y: 0 }
   });
 
   // Touch virtual inputs
@@ -20,7 +21,8 @@ export function useKeyboardControls() {
     right: false,
     sprint: false,
     jump: false,
-    interact: false
+    interact: false,
+    analogVector: { x: 0, y: 0 }
   });
 
   useEffect(() => {

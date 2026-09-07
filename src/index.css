@@ -1228,10 +1228,383 @@ a {
   color: var(--color-cyan);
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .contact-grid { grid-template-columns: 1fr; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .hud-quest-tracker { display: none; }
-  .controls-grid { grid-template-columns: repeat(2, 1fr); }
+/* ================= MOBILE CONTROLS OVERLAY ================= */
+.mobile-controls-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
+
+/* On pure desktop with precise mouse, hide virtual mobile controls */
+@media (min-width: 1025px) and (pointer: fine) {
+  .mobile-controls-overlay {
+    display: none;
+  }
+  .mobile-controls-hint {
+    display: none;
+  }
+}
+
+/* Virtual Joystick */
+.joystick-container {
+  position: absolute;
+  bottom: 28px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.virtual-joystick-base {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.88) 0%, rgba(2, 6, 23, 0.96) 100%);
+  border: 2px solid rgba(0, 240, 255, 0.55);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: grab;
+}
+
+.joystick-dir-indicator {
+  position: absolute;
+  color: rgba(0, 240, 255, 0.45);
+  font-size: 10px;
+  font-weight: 800;
+  pointer-events: none;
+}
+.dir-n { top: 6px; }
+.dir-s { bottom: 6px; }
+.dir-w { left: 8px; }
+.dir-e { right: 8px; }
+
+.virtual-joystick-knob {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38bdf8 0%, #0284c7 60%, #0369a1 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.9), 0 4px 12px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.virtual-joystick-knob.knob-active {
+  box-shadow: 0 0 28px rgba(0, 240, 255, 1), 0 0 10px #ffffff;
+}
+
+.knob-core {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 8px #ffffff;
+}
+
+.joystick-guide-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-cyan);
+  background: rgba(15, 23, 42, 0.85);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Mobile Action Buttons (Right) */
+.mobile-action-buttons {
+  position: absolute;
+  bottom: 28px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: auto;
+}
+
+.mobile-action-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  touch-action: manipulation;
+  backdrop-filter: blur(12px);
+  transition: transform 0.1s ease, box-shadow 0.2s, background 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-btn:active {
+  transform: scale(0.92);
+}
+
+.mobile-btn-jump {
+  width: 68px;
+  height: 68px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.35) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 2px solid var(--color-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-btn-sprint {
+  width: 58px;
+  height: 58px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-btn-sprint.btn-sprint-active {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.7);
+}
+
+.mobile-btn-interact {
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid var(--color-cyan);
+  box-shadow: 0 0 26px rgba(0, 240, 255, 0.7);
+  animation: promptPulse 1.8s infinite;
+  color: #ffffff;
+  max-width: 220px;
+}
+
+.interact-btn-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.interact-station-action {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-cyan);
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+}
+
+.interact-station-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+/* Cheatsheet Mobile Hint */
+.mobile-controls-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px dashed rgba(0, 240, 255, 0.45);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+
+.mobile-hint-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-cyan);
+  background: rgba(15, 23, 42, 0.85);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.mobile-hint-text {
+  font-size: 12px;
+  color: #e2e8f0;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ================= RESPONSIVE DESIGN ================= */
+@media (max-width: 1024px) {
+  .hud-quest-tracker {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide desktop-only elements */
+  .desktop-controls-grid {
+    display: none;
+  }
+  .hud-interact-prompt-bar {
+    display: none !important;
+  }
+  .btn-text-desktop {
+    display: none;
+  }
+
+  /* Top HUD bar */
+  .hud-top-bar {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  .hud-identity {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  .hud-avatar-ring {
+    width: 28px;
+    height: 28px;
+  }
+  .hud-pilot-tag {
+    display: none;
+  }
+  .hud-player-role {
+    display: none;
+  }
+  .hud-player-name {
+    font-size: 13px;
+  }
+
+  /* Radar map compact */
+  .hud-radar-container {
+    top: 60px;
+    right: 10px;
+    padding: 6px;
+  }
+  .radar-header {
+    display: none;
+  }
+  .radar-circle {
+    width: 80px;
+    height: 80px;
+  }
+  .radar-ring.inner { width: 30px; height: 30px; }
+  .radar-ring.middle { width: 55px; height: 55px; }
+
+  /* Modals */
+  .modal-overlay {
+    padding: 8px;
+  }
+  .modal-window {
+    max-height: 94vh;
+    border-radius: var(--radius-md);
+  }
+  .modal-header {
+    padding: 14px 16px;
+  }
+  .modal-title {
+    font-size: 18px;
+  }
+  .modal-body {
+    padding: 16px;
+  }
+  .projects-grid-modal {
+    grid-template-columns: 1fr;
+  }
+  .skills-category-group {
+    grid-template-columns: 1fr;
+  }
+  .contact-channel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Input fields legible size preventing iOS auto zoom */
+  .form-group input, .form-group textarea {
+    font-size: 16px;
+  }
+
+  /* Start Screen */
+  .hero-title {
+    font-size: clamp(28px, 8vw, 42px);
+  }
+  .hero-subtitle {
+    font-size: 15px;
+  }
+  .hero-description {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .controls-cheatsheet {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .joystick-container {
+    bottom: 18px;
+    left: 14px;
+  }
+  .virtual-joystick-base {
+    width: 112px;
+    height: 112px;
+  }
+  .virtual-joystick-knob {
+    width: 46px;
+    height: 46px;
+  }
+  .mobile-action-buttons {
+    bottom: 18px;
+    right: 14px;
+    gap: 10px;
+  }
+  .mobile-btn-jump {
+    width: 62px;
+    height: 62px;
+  }
+  .mobile-btn-sprint {
+    width: 52px;
+    height: 52px;
+  }
+  .mobile-btn-interact {
+    padding: 8px 14px;
+  }
+  .interact-station-title {
+    max-width: 110px;
+  }
+}
+
