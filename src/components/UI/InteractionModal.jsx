@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, TwitterIcon } from './SocialIcons';
 
-export function InteractionModal({ zone, onClose, onSwitchTo2D }) {
+export function InteractionModal({ zone, onClose }) {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [formSent, setFormSent] = useState(false);
   const [projectCategory, setProjectCategory] = useState('All');
@@ -420,10 +420,6 @@ export function InteractionModal({ zone, onClose, onSwitchTo2D }) {
         <div className="modal-footer">
           <button onClick={onClose} className="btn-secondary-glass">
             Back to Game [Esc]
-          </button>
-          <button onClick={onSwitchTo2D} className="btn-accent-pill">
-            <span>View Full 2D Portfolio</span>
-            <ArrowRight size={14} />
           </button>
         </div>
       </div>

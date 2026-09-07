@@ -5,13 +5,12 @@ import { GameHUD } from './components/UI/GameHUD';
 import { InteractionModal } from './components/UI/InteractionModal';
 import { SettingsModal } from './components/UI/SettingsModal';
 import { MobileControls } from './components/UI/MobileControls';
-import { TraditionalPortfolio } from './components/Portfolio/TraditionalPortfolio';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
 import { soundManager } from './audio/soundManager';
 import { portfolioData } from './data/portfolio';
 
 export default function App() {
-  // Navigation & mode state: 'start' | 'game' | 'portfolio2d'
+  // Navigation state: 'start' | 'game'
   const [viewMode, setViewMode] = useState('start');
   const [isMuted, setIsMuted] = useState(false);
   const [activeModalZone, setActiveModalZone] = useState(null);
@@ -35,23 +34,6 @@ export default function App() {
 
   // Handle Enter Game World from Start Screen
   const handleEnterGame = () => {
-    setViewMode('game');
-    if (!isMuted) {
-      soundManager.startAmbientMusic();
-    }
-  };
-
-  // Switch to Traditional 2D Portfolio View
-  const handleViewPortfolio = () => {
-    soundManager.playClick();
-    setActiveModalZone(null);
-    setSettingsOpen(false);
-    setViewMode('portfolio2d');
-  };
-
-  // Return to 3D Game World from 2D Portfolio
-  const handleReturnToGame = () => {
-    soundManager.playClick();
     setViewMode('game');
     if (!isMuted) {
       soundManager.startAmbientMusic();
@@ -102,26 +84,23 @@ export default function App() {
 
   return (
     <div className="app-root">
-      {/* 3D WebGL Canvas Layer (active during 'start' and 'game' modes) */}
-      {viewMode !== 'portfolio2d' && (
-        <GameCanvas
-          gameStarted={viewMode === 'game'}
-          movement={activeModalZone || settingsOpen ? {} : movement}
-          activeModal={activeModalZone}
-          onInteractZone={handleInteractZone}
-          nearbyZone={nearbyZone}
-          setNearbyZone={setNearbyZone}
-          onPlayerPositionChange={setPlayerPosition}
-          teleportTarget={teleportTarget}
-          onTeleportComplete={() => setTeleportTarget(null)}
-        />
-      )}
+      {/* 3D WebGL Canvas Layer */}
+      <GameCanvas
+        gameStarted={viewMode === 'game'}
+        movement={activeModalZone || settingsOpen ? {} : movement}
+        activeModal={activeModalZone}
+        onInteractZone={handleInteractZone}
+        nearbyZone={nearbyZone}
+        setNearbyZone={setNearbyZone}
+        onPlayerPositionChange={setPlayerPosition}
+        teleportTarget={teleportTarget}
+        onTeleportComplete={() => setTeleportTarget(null)}
+      />
 
       {/* Start Screen (Cinematic Opening) */}
       {viewMode === 'start' && (
         <StartScreen
           onEnterGame={handleEnterGame}
-          onViewPortfolio={handleViewPortfolio}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
         />
@@ -133,7 +112,6 @@ export default function App() {
           <GameHUD
             nearbyZone={nearbyZone}
             onInteract={handleInteractZone}
-            onViewPortfolio={handleViewPortfolio}
             onOpenSettings={() => setSettingsOpen(true)}
             isMuted={isMuted}
             onToggleMute={handleToggleMute}
@@ -156,7 +134,6 @@ export default function App() {
         <InteractionModal
           zone={activeModalZone}
           onClose={handleCloseModal}
-          onSwitchTo2D={handleViewPortfolio}
         />
       )}
 
@@ -168,13 +145,7 @@ export default function App() {
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
           onResetPosition={handleResetPosition}
-          onViewPortfolio={handleViewPortfolio}
         />
-      )}
-
-      {/* Traditional 2D Recruiter Portfolio View */}
-      {viewMode === 'portfolio2d' && (
-        <TraditionalPortfolio onReturnToGame={handleReturnToGame} />
       )}
     </div>
   );

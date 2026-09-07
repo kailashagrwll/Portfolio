@@ -1,14 +1,13 @@
 import React from 'react';
 import { soundManager } from '../../audio/soundManager';
-import { X, Volume2, VolumeX, RotateCcw, Navigation, FileText, Check } from 'lucide-react';
+import { X, Volume2, VolumeX, RotateCcw, Navigation, Check } from 'lucide-react';
 
 export function SettingsModal({
   isOpen,
   onClose,
   isMuted,
   onToggleMute,
-  onResetPosition,
-  onViewPortfolio
+  onResetPosition
 }) {
   if (!isOpen) return null;
 
@@ -72,17 +71,6 @@ export function SettingsModal({
               >
                 <RotateCcw size={16} />
                 <span>Respawn at Center</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  onClose();
-                  onViewPortfolio();
-                }}
-                className="btn-secondary-glass"
-              >
-                <FileText size={16} />
-                <span>Switch to 2D Portfolio</span>
               </button>
             </div>
           </div>

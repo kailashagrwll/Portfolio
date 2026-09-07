@@ -4,7 +4,6 @@ import { soundManager } from '../../audio/soundManager';
 import confetti from 'canvas-confetti';
 import {
   Compass,
-  FileText,
   Volume2,
   VolumeX,
   HelpCircle,
@@ -16,7 +15,6 @@ import {
 export function GameHUD({
   nearbyZone,
   onInteract,
-  onViewPortfolio,
   onOpenSettings,
   isMuted,
   onToggleMute,
@@ -119,16 +117,6 @@ export function GameHUD({
               </div>
             )}
           </div>
-
-          {/* Recruiter 2D portfolio toggle */}
-          <button
-            onClick={onViewPortfolio}
-            className="hud-action-btn hud-btn-portfolio"
-            title="Switch to Traditional 2D Portfolio"
-          >
-            <FileText size={16} />
-            <span>View 2D Portfolio</span>
-          </button>
 
           {/* Sound Mute */}
           <button

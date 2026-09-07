@@ -1,9 +1,9 @@
 import React from 'react';
 import { portfolioData } from '../../data/portfolio';
 import { soundManager } from '../../audio/soundManager';
-import { Play, FileText, Volume2, VolumeX, Sparkles, Navigation } from 'lucide-react';
+import { Play, Volume2, VolumeX, Sparkles, Navigation } from 'lucide-react';
 
-export function StartScreen({ onEnterGame, onViewPortfolio, isMuted, onToggleMute }) {
+export function StartScreen({ onEnterGame, isMuted, onToggleMute }) {
   const { personal } = portfolioData;
 
   const handleEnterWorld = () => {
@@ -13,11 +13,6 @@ export function StartScreen({ onEnterGame, onViewPortfolio, isMuted, onToggleMut
       soundManager.startAmbientMusic();
     }
     onEnterGame();
-  };
-
-  const handleViewPortfolio = () => {
-    soundManager.playClick();
-    onViewPortfolio();
   };
 
   return (
@@ -61,15 +56,6 @@ export function StartScreen({ onEnterGame, onViewPortfolio, isMuted, onToggleMut
           >
             <Play size={18} fill="currentColor" />
             <span>Enter the 3D World</span>
-          </button>
-
-          <button
-            onClick={handleViewPortfolio}
-            className="btn-secondary-glass"
-            id="view-portfolio-btn"
-          >
-            <FileText size={18} />
-            <span>View 2D Portfolio</span>
           </button>
         </div>
 

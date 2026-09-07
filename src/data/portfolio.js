@@ -87,12 +87,12 @@ export const portfolioData = {
       category: "Full-Stack",
       period: "Feb' 26 — Present",
       featured: true,
-      description: "An explorable 3D low-poly futuristic island portfolio game with real-time character physics, Web Audio synthesizer, and instant 2D recruiter toggle.",
+      description: "An explorable 3D low-poly futuristic island portfolio game with real-time character physics, Web Audio synthesizer, and interactive campus stations.",
       highlights: [
         "Built custom third-person procedural character controller with jump, sprint, and smooth camera rig.",
-        "Engineered 7 interactive island campus stations (Spawn, About, Projects, Skills, Training, Contact, and Resume).",
+        "Engineered interactive island campus stations (Spawn Plaza, About Pavilion, Projects Arena, Skills Lab, Training Base, and Contact Tower).",
         "Developed custom Web Audio API synthesizer for spatial ambient music and procedural sound effects without external audio assets.",
-        "Included high-contrast dual mode: gamified 3D exploration and a recruiter-friendly 2D portfolio."
+        "Crafted optimized low-poly stylized aesthetics with daytime lighting, vibrant shaders, and responsive UI modals."
       ],
       tech: ["React", "Three.js", "React Three Fiber", "@react-three/drei", "Vite", "Web Audio API", "Vanilla CSS"],
       github: "https://github.com/kailashagrwll/Portfolio",
